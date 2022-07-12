@@ -3,12 +3,17 @@ import { UsersService } from '../users/users.service'
 import { AuthDto } from './dto/authDto'
 import { hash, compare } from 'bcrypt'
 import { ERROR_MASSAGES } from '../constans/constans'
+import { JwtService } from '@nestjs/jwt'
+
 
 
 @Injectable()
 export class AuthService {
 
-  constructor(private readonly userService: UsersService) {
+  constructor(
+    private readonly userService: UsersService,
+    private readonly jwtService: JwtService
+  ) {
   }
 
 
@@ -21,7 +26,16 @@ export class AuthService {
       password: hashPassword,
     }
 
-    return this.userService.createUser(newUser)
+    const tokens = await this.issueTokenPair(23)
+
+    console.log('tokens===> ', tokens)
+
+    const user = await this.userService.createUser(newUser)
+
+    return {
+      user,
+      ...tokens
+    }
   }
 
 
@@ -42,5 +56,33 @@ export class AuthService {
     }
 
     return user
+  }
+
+
+  async issueTokenPair(userId) {
+    const data = { _id: userId }
+
+    const refreshToken  = await  this.jwtService.signAsync(data, {
+      expiresIn: '15d'
+    })
+
+    const accessToken  = await  this.jwtService.signAsync(data, {
+      expiresIn: '1h'
+    })
+
+    console.log('refreshToken=>>>', refreshToken)
+    console.log('accessToken=>>>', accessToken)
+
+
+    return {refreshToken, accessToken}
+  }
+
+
+  returnUserFields(user) {
+    return {
+      _id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin
+    }
   }
 }
