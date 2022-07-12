@@ -1,18 +1,26 @@
-import {Body, Controller, Post} from '@nestjs/common';
-import {AuthService} from "./auth.service";
-import {UsersService} from "../users/users.service";
-import {CreateUserDto} from "./dto/createUserDto";
+import { Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { AuthDto } from './dto/authDto'
 
 @Controller('auth')
 export class AuthController {
 
-    constructor(private readonly authService: AuthService,
-                private readonly userService: UsersService
-    ) {
-    }
+  constructor(private readonly authService: AuthService,
+  ) {
+  }
 
-    @Post('/register')
-    async register(@Body() createUserDto: CreateUserDto) {
-        return this.userService.createUser(createUserDto)
-    }
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('/register')
+  async register(@Body() authDto: AuthDto) {
+    return this.authService.createUser(authDto)
+  }
+
+
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('/login')
+  async login(@Body() authDto: AuthDto) {
+    return this.authService.userValidate(authDto)
+  }
 }
