@@ -1,16 +1,19 @@
-import {Body, Controller, Post} from '@nestjs/common';
-import {User} from "./user.model";
-import {UsersService} from "./users.service";
-import {AuthDto} from "../auth/dto/authDto";
+import { Controller, Get } from '@nestjs/common'
 
-@Controller('users')
+import { UsersService } from './users.service'
+import { Auth } from '../auth/decorators/auth.decorator'
+
+
+@Controller()
 export class UsersController {
-    constructor(private readonly userService: UsersService) {
-    }
+  constructor(private readonly userService: UsersService) {
+  }
 
-    // @Post()
-    // async createUser(@Body() createCatDto: AuthDto): Promise<User> {
-    //     console.log('createCatDto', createCatDto)
-    //     return this.userService.createUser(createCatDto)
-    // }
+
+  @Auth('user')
+  @Get('info')
+  async getCurrentUser() {
+    return 'qqqqq'
+  }
+
 }

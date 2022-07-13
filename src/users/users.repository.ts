@@ -21,4 +21,8 @@ export class UserRepository {
   async findUserByEmail(email: string) {
     return this.UserModel.findOne({ email: email }) // user | null
   }
+
+  async findUserById(id: string) {
+    return this.UserModel.findOne({ _id: id }) // user | null
+  }
 }

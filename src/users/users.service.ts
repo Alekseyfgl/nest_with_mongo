@@ -37,4 +37,18 @@ export class UsersService {
 
     return user
   }
+
+
+  async getUserById(id: string) {
+    const user = await this.userRepository.findUserById(id)
+
+    if (!user) {
+      throw new HttpException(
+        ERROR_MASSAGES.USER_DOESNT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    return user
+  }
 }
