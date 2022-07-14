@@ -3,6 +3,9 @@ export const enum ERROR_MASSAGES {
   INCORRECT_DATA = 'You entered incorrect data',
   USER_DOESNT_EXIST = 'User does not exist',
   NOT_AUTHORIZED = 'Not authorized',
-  TOKEN_IS_NOT_VALID = 'Token is not valid',
-  ACCESS_DENIED = 'Access denied',
+}
+
+export const enum EXPIRE_TOKENS {
+  refreshToken ='15days',
+  accessToken = 300
 }

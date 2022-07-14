@@ -17,7 +17,7 @@ export class AuthMiddleware implements NestMiddleware {
         if (req.headers.authorization) {
             const token: string = req.headers.authorization.split(' ')[1];
             try {
-                const decodeUser = await this.validateToken(token);
+                const decodeUser: boolean = await this.validateToken(token);
                 // @ts-ignore
                 req.user = await this.userService.getUserById(decodeUser._id);
 
@@ -28,7 +28,7 @@ export class AuthMiddleware implements NestMiddleware {
         next();
     }
 
-    validateToken(token: string) {
+    validateToken(token: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             verify(token, process.env.JWT_SECRET, (error, decoded) => {
                 if (error) return reject(error);

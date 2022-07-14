@@ -1,24 +1,4 @@
-import {Base, TimeStamps} from "@typegoose/typegoose/lib/defaultClasses";
-import {prop} from "@typegoose/typegoose";
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {timestamp} from "rxjs";
-
-
-// export interface UserModule extends Base {
-// }
-
-//
-// export class UserModule extends TimeStamps {
-//
-//     @prop({unique: true})
-//     email: string
-//
-//     @prop({minlength: 5})
-//     password: string
-//
-//     @prop({default: false})
-//     isAdmin?: boolean
-// }
 
 
 
@@ -37,15 +17,13 @@ export class User {
         type: String,
         required: true,
     })
-    password: number;
+    password: string;
 
     @Prop({default: false})
-    isAdmin?: boolean
+    isAdmin: boolean
 
     @Prop({default: Date})
     createAt: Date;
-
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,8 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common'
 import {UserRepository} from "./users.repository";
-import { ERROR_MASSAGES } from '../constans/constans'
-import { compare } from 'bcrypt';
+import {ERROR_MASSAGES} from '../constans/constans'
+import {compare} from 'bcrypt';
 import {currentUserResponse} from "./users.mapper";
+import {CurrentUserResponse, UserType} from "./interfaces/users.interfaces";
+import {Optional} from "../optional/optional.interface";
+import {User} from "./user.model";
 
 @Injectable()
 export class UsersService {
@@ -11,15 +14,14 @@ export class UsersService {
     ) {
 
 
-
     }
 
-    async createUser(userDto) {
-        const user = await this.userRepository.findUserByEmail(userDto.email)
+    async createUser(userDto): Promise<User> {
+        const user: Optional<UserType> = await this.userRepository.findUserByEmail(userDto.email)
 
         if (user) {
-            throw new HttpException('Мыло занято',
-              HttpStatus.BAD_REQUEST,
+            throw new HttpException(ERROR_MASSAGES.EMAIL_IS_TAKEN,
+                HttpStatus.BAD_REQUEST,
             )
         }
 
@@ -27,19 +29,19 @@ export class UsersService {
     }
 
 
-    async getRegisteredUser(userFromDB) {
-        const user = await this.userRepository.findUserByEmail(userFromDB.email)
+    async getRegisteredUser(userFromDB): Promise<UserType> {
+        const user: Optional<UserType> = await this.userRepository.findUserByEmail(userFromDB.email)
 
         if (!user) {
             throw new HttpException(
-              ERROR_MASSAGES.USER_DOESNT_EXIST,
-              HttpStatus.BAD_REQUEST,
+                ERROR_MASSAGES.USER_DOESNT_EXIST,
+                HttpStatus.BAD_REQUEST,
             )
         }
 
         const isPassword: boolean = await compare(
-          userFromDB.password,
-          user.password,
+            userFromDB.password,
+            user.password,
         );
 
         if (!isPassword) {
@@ -49,19 +51,19 @@ export class UsersService {
     }
 
 
-    async getUserById(id: string) {
-        const user = await this.userRepository.findUserById(id)
+    async getUserById(id: string): Promise<UserType> {
+        const user: Optional<UserType> = await this.userRepository.findUserById(id)
         if (!user) {
             throw new HttpException(
-              ERROR_MASSAGES.USER_DOESNT_EXIST,
-              HttpStatus.BAD_REQUEST,
+                ERROR_MASSAGES.USER_DOESNT_EXIST,
+                HttpStatus.BAD_REQUEST,
             )
         }
         return user
     }
 
-    async getCurrentUser(id: string) {
-        const user = await this.userRepository.findUserById(id)
+    async getCurrentUser(id: string): Promise<CurrentUserResponse> {
+        const user: Optional<UserType> = await this.userRepository.findUserById(id)
         if (!user) {
             throw new HttpException(
                 ERROR_MASSAGES.USER_DOESNT_EXIST,
