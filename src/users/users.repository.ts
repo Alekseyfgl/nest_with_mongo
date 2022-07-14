@@ -11,9 +11,7 @@ export class UserRepository {
     constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {}
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const createdCat = new this.UserModel(createUserDto);
-        // console.log(createUserDto)
-        return createdCat.save();
+       return  new this.UserModel(createUserDto).save();
     }
 
 
