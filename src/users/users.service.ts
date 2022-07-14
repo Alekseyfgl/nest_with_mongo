@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import {UserRepository} from "./users.repository";
 import { ERROR_MASSAGES } from '../constans/constans'
 import { compare } from 'bcrypt';
-import { CreateUserDto } from '../auth/dto/createUserDto'
+import {currentUserResponse} from "./users.mapper";
 
 @Injectable()
 export class UsersService {
@@ -45,25 +45,29 @@ export class UsersService {
         if (!isPassword) {
             throw new HttpException(ERROR_MASSAGES.INCORRECT_DATA, HttpStatus.BAD_REQUEST)
         }
-
         return user
     }
 
 
-    // async getUserByEmail(user) {
-    //
-    // }
-
     async getUserById(id: string) {
         const user = await this.userRepository.findUserById(id)
-
         if (!user) {
             throw new HttpException(
               ERROR_MASSAGES.USER_DOESNT_EXIST,
               HttpStatus.BAD_REQUEST,
             )
         }
-
         return user
+    }
+
+    async getCurrentUser(id: string) {
+        const user = await this.userRepository.findUserById(id)
+        if (!user) {
+            throw new HttpException(
+                ERROR_MASSAGES.USER_DOESNT_EXIST,
+                HttpStatus.BAD_REQUEST,
+            )
+        }
+        return currentUserResponse(user)
     }
 }
