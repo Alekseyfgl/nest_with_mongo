@@ -1,26 +1,26 @@
 import {Injectable, NestMiddleware} from "@nestjs/common";
 import {UsersService} from "../../users/users.service";
 import {NextFunction} from "express";
-import {  verify } from 'jsonwebtoken';
+import {verify} from 'jsonwebtoken';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-    constructor(private readonly userService: UsersService) {}
+    constructor(private readonly userService: UsersService) {
+    }
 
     async use(
-        req,
+        req: any,
         res: Response,
         next: NextFunction,
     ): Promise<void> {
-        //получаем токен из заголовка
 
-        req.headers.au
         if (req.headers.authorization) {
             const token: string = req.headers.authorization.split(' ')[1];
             try {
                 const decodeUser = await this.validateToken(token);
                 // @ts-ignore
                 req.user = await this.userService.getUserById(decodeUser._id);
+
             } catch (e) {
                 req.user = null;
             }
